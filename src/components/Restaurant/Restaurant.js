@@ -6,12 +6,35 @@ import './Restaurant.css';
 const Restaurant = () => {
     const [meals, setMeals] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [search, setSearch] = useState('');
+
+        // if(inputvalue){
+        //     inputValue = document.getElementById('input').value;
+        // }
+        // else{
+        //     inputValue = 'fish';
+        // }
 
     useEffect(() => {
-        fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=fish')
+        const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${search}`;
+        fetch(url)
             .then(res => res.json())
             .then(data => setMeals(data.meals));
-    }, []);
+    }, [search]);
+
+    // console.log(search)
+    // const handleChange =(e)=>{
+    //     console.log(e.target.value);
+    //     setInputvalue('fish');
+    // }
+
+    const addToCart =(id)=>{
+        let quantity = 0;
+        if(meals.idMeal === id){
+            quantity+=1;
+        }
+        setOrders(quantity)
+    }
     /* 
         The above api link or the below method will now work for search. 
         if you want to implement search in this code. 
@@ -29,19 +52,24 @@ const Restaurant = () => {
     
 
     return (
-        <div className="restaurant-menu">
-            <div className="meals-container">
-                {
-                    meals.map(meal => <Meal
-                        key={meal.idMeal}
-                        meal={meal}
-                    ></Meal>)
-                }
-            </div>
-            <div className="order-list">
-                <OrderList orders={orders}></OrderList>
+        <div>
+            <input className='w-25 m-3 bg-info-subtle p-1 rounded text-warning' onChange={(e)=>setSearch(e.target.value)} placeholder='Please Search the food you like' type="text" name="" id="input" />
+            <div className="restaurant-menu m-4">
+                <div className="meals-container">
+                    {
+                        meals?.map(meal => <Meal
+                            key={meal.idMeal}
+                            meal={meal}
+                            addToCart={addToCart}
+                        ></Meal>)
+                    }
+                </div>
+                <div className="order-list">
+                    <OrderList orders={orders}></OrderList>
+                </div>
             </div>
         </div>
+        
 
     );
 };
